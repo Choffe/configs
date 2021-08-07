@@ -15,9 +15,10 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'preservim/nerdtree'
 
+Plug 'machakann/vim-highlightedyank'
+
 " For coc to work install nodejs with
 " curl -sL install-node.now.sh/lts | bash
-"
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
@@ -31,7 +32,9 @@ colorscheme codedark
 " Open fzf search
 map <C-p> :Files<CR>
 
-nnoremap <C-S-e> :NERDTree<CR>
+" Shift does not always work in all terminals, uncomment to launch NERDTree
+" nnoremap <C-S-e> :NERDTree<CR>
+
 " Start NERDTree and put the cursor back in the other window.
 autocmd VimEnter * NERDTree | wincmd p
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
