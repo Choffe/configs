@@ -42,6 +42,9 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " turn hybrid line numbers on
 :set number relativenumber
 
+" Saves files when leaving insert mode
+autocmd InsertLeave * update
+
 " CoC autocomplete settings
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
@@ -69,3 +72,25 @@ inoremap <silent><expr> <c-@> coc#refresh()
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+set vb
+set t_vb=
+
+cnoremap term vertical term
+
+" Put plugins and dictionaries in this dir (also on Windows)
+let vimDir = '$HOME/.vim'
+
+if stridx(&runtimepath, expand(vimDir)) == -1
+  " vimDir is not on runtimepath, add it
+  let &runtimepath.=','.vimDir
+endif
+
+" Keep undo history across sessions by storing it in a file
+if has('persistent_undo')
+    let myUndoDir = expand(vimDir . '/undodir')
+    " Create dirs
+    call system('mkdir ' . vimDir)
+    call system('mkdir ' . myUndoDir)
+    let &undodir = myUndoDir
+    set undofile
+endif
