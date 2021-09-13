@@ -94,3 +94,7 @@ if has('persistent_undo')
     let &undodir = myUndoDir
     set undofile
 endif
+
+" Ignore case during searches if all is lowercase
+set ignorecase
+set smartcase
