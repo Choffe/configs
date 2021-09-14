@@ -98,3 +98,14 @@ endif
 " Ignore case during searches if all is lowercase
 set ignorecase
 set smartcase
+
+" Move line mappings, first map is only needed on some machines
+map <Esc>j <A-j>
+map <Esc>k <A-k>
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
