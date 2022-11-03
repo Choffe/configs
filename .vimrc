@@ -20,14 +20,27 @@ Plug 'machakann/vim-highlightedyank'
 " For coc to work install nodejs with
 " curl -sL install-node.now.sh/lts | bash
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sheerun/vim-polyglot'
 
 call plug#end()
 
+" Polygot want nocompatible
+set nocompatible
+
+" Highligh whitespace damage, needs to be berfore colorscheme
+highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 colorscheme codedark
 
 :inoremap jk <Esc>
-:inoremap kj <Esc>
+
+:nnoremap <leader>n <Esc>:set nu! \| set rnu!<CR>
 
 " Open fzf search
 map <C-p> :Files<CR>
@@ -44,6 +57,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 " Saves files when leaving insert mode
 autocmd InsertLeave * update
+autocmd BufLeave * if &buftype != 'terminal' |  update
+autocmd WinLeave * if &buftype != 'terminal' | update
 
 " CoC autocomplete settings
 
@@ -72,10 +87,39 @@ inoremap <silent><expr> <c-@> coc#refresh()
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
 set vb
 set t_vb=
-
-cnoremap term vertical term
 
 " Put plugins and dictionaries in this dir (also on Windows)
 let vimDir = '$HOME/.vim'
@@ -109,3 +153,27 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+:set tabstop=2 shiftwidth=2 expandtab
+
+:augroup numbertoggle
+:  autocmd!
+:  autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
+:  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
+:augroup END
+
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .o -l -g ""'
+
+:nnoremap <leader>f <Esc>:Ag<CR>
+:nnoremap <leader>F <Esc>:Ag <C-R><C-W><CR>
+
+" swap ' and ` so 'a goes to line and column marked with ma
+nnoremap ' `
+nnoremap ` '
+
+nnoremap <C-k> :History<CR>
+
+set autoread
+
+set wildignore+=*.pyc,*.o,*.obj,*.svn,*.swp,*.class,*.hg,*.DS_Store,*.min.*
+let NERDTreeRespectWildIgnore=1
