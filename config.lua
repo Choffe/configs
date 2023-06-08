@@ -19,10 +19,15 @@ lvim.colorscheme = "onedarker"
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-lvim.keys.normal_mode["<Tab>"] = ":bnext<cr>"
-lvim.keys.normal_mode["<S-Tab>"] = ":bprev<cr>"
+lvim.keys.normal_mode["<leader><Tab>"] = ":bnext<cr>"
+lvim.keys.normal_mode["<leader><S-Tab>"] = ":bprev<cr>"
+-- open new file
 lvim.keys.normal_mode["<C-p>"] = require("lvim.core.telescope.custom-finders").find_project_files
+-- grep for word under cursor
+lvim.keys.normal_mode["<C-f>"] = require('telescope.builtin').grep_string
+-- open old recently opened files
 lvim.keys.normal_mode["<C-k>"] = "<cmd>Telescope oldfiles<cr>"
+-- switch between header file and source file for c and c++
 lvim.keys.normal_mode["<C-h>"] = "<cmd>call CurtineIncSw()<cr>"
 -- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 -- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
@@ -46,7 +51,7 @@ lvim.keys.normal_mode["<C-h>"] = "<cmd>call CurtineIncSw()<cr>"
 --   n = {
 --     ["<C-j>"] = actions.move_selection_next,
 --     ["<C-k>"] = actions.move_selection_previous,
---   },
+--   }
 -- }
 
 -- Use which-key to add extra bindings with the leader-key prefix
@@ -65,7 +70,6 @@ lvim.keys.normal_mode["<C-h>"] = "<cmd>call CurtineIncSw()<cr>"
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
@@ -176,7 +180,7 @@ lvim.plugins = {
 require("better_escape").setup {
   mapping = { "jk" }, -- a table with mappings to use
   timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
-  clear_empty_lines = false, -- clear line after escaping if there is only whitespace
+  clear_empty_lines = true, -- clear line after escaping if there is only whitespace
   -- keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
 }
 --     {"folke/tokyonight.nvim"},
@@ -207,4 +211,5 @@ vim.api.nvim_create_autocmd("BufLeave", {
 --   end,
 -- })
 vim.diagnostic.disable()
-vim.g.current_line_whitespace_disabled_soft = 1;
+vim.g.current_line_whitespace_disabled_soft = 1
+vim.cmd("set nomodeline")
